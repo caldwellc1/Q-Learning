@@ -1,5 +1,6 @@
 package solution;
 
+import util.GridCell;
 import util.Percept;
 import util.QLearner;
 import util.State;
@@ -27,9 +28,9 @@ public class MyQLearner extends QLearner
     public MyQLearner(String name)
     {
         super(name);
-        s = null;
-        a = null;
-        r = Double.NEGATIVE_INFINITY;
+        s = null; //previous state
+        a = null; //action
+        r = Double.NEGATIVE_INFINITY; //reward
     }
 
     @Override
@@ -37,7 +38,7 @@ public class MyQLearner extends QLearner
     {
         return Double.NEGATIVE_INFINITY;
     }
-
+    
     /**
      * Plays the game using a Q-Learning agent.
      * 
@@ -47,6 +48,18 @@ public class MyQLearner extends QLearner
      */
     public String play(Percept percept)
     {
+    	GridCell[][] neighbor = percept.neighborhood(); //Nsa
+    	GridCell stateNeighbor = percept.current(); //Q
+    	double reward = percept.score();
+    	double gamma = percept.gamma();
+    	if(s.isTerminal()) {
+    		
+    	}
+    	if(s != null) {
+    		
+    	}
+    	
+    	//return a;
         return "N";
     }
 
