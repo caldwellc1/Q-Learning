@@ -1,9 +1,9 @@
 package solution;
 
-import util.GridCell;
 import util.Percept;
 import util.QLearner;
 import util.State;
+import java.util.List;
 
 /**
  * An agent that uses value iteration to play the game.
@@ -13,8 +13,8 @@ import util.State;
  */
 public class MyQLearner extends QLearner
 {
-    private static final boolean DEBUG = false;
-    private static final double NE = 100.0;
+    //private static final boolean DEBUG = false;
+    //private static final double NE = 100.0;
     private State s;
     private String a;
     private double r;
@@ -29,7 +29,7 @@ public class MyQLearner extends QLearner
     {
         super(name);
         s = null; //previous state
-        a = null; //action
+        a = null; //previous action
         r = Double.NEGATIVE_INFINITY; //reward
     }
 
@@ -48,19 +48,32 @@ public class MyQLearner extends QLearner
      */
     public String play(Percept percept)
     {
-    	GridCell[][] neighbor = percept.neighborhood(); //Nsa
-    	GridCell stateNeighbor = percept.current(); //Q
-    	double reward = percept.score();
+    	MyState statePrime = new MyState(percept);
     	double gamma = percept.gamma();
-    	if(s.isTerminal()) {
-    		
+    	double rewardPrime = percept.current().reward();
+    	List<String> actions = percept.actions();
+    	
+    	if(statePrime.isTerminal()) {
+    		putValue(getQ(), statePrime, a, rewardPrime);
     	}
     	if(s != null) {
-    		
+    		addValue(getN(), s, a, 1);
+    		double sa = value(getQ(), s, a);
+    		double alpha = 1/value(getN(), s, a);
+    		double max = maxValue(statePrime, actions);
+    		double newQ = sa + alpha * (r + gamma * max - sa);
+    		putValue(getQ(), s, a, newQ);
     	}
-    	
-    	//return a;
-        return "N";
+        if(statePrime.isTerminal()) {
+    		s = null;
+    		a = null;
+    		r = Double.NEGATIVE_INFINITY;
+    	}else {
+    		s = statePrime;
+            a = maxExplorationAction(statePrime, actions);
+            r = rewardPrime;
+    	}
+    	return a;
     }
 
 }
