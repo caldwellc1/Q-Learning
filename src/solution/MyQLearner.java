@@ -14,7 +14,7 @@ import java.util.List;
 public class MyQLearner extends QLearner
 {
     //private static final boolean DEBUG = false;
-    //private static final double NE = 100.0;
+    private static final double NE = 100.0;
     private State s;
     private String a;
     private double r;
@@ -36,7 +36,10 @@ public class MyQLearner extends QLearner
     @Override
     protected double explorationFunction(State state, String action)
     {
-        return Double.NEGATIVE_INFINITY;
+    	if (value(getN(), state, action) < NE) {
+    		return Double.POSITIVE_INFINITY;
+    	}
+        return value(getQ(), state, action);
     }
     
     /**
@@ -54,7 +57,10 @@ public class MyQLearner extends QLearner
     	List<String> actions = percept.actions();
     	
     	if(statePrime.isTerminal()) {
-    		putValue(getQ(), statePrime, a, rewardPrime);
+    		putValue(getQ(), statePrime, "N", rewardPrime);
+    		putValue(getQ(), statePrime, "S", rewardPrime);
+    		putValue(getQ(), statePrime, "E", rewardPrime);
+    		putValue(getQ(), statePrime, "W", rewardPrime);
     	}
     	if(s != null) {
     		addValue(getN(), s, a, 1);
